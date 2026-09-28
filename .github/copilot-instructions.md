@@ -10,7 +10,6 @@ screen corner: "Are you going to be home on time?" with three buttons.
 - "Yes" -> POST "I'll be home on time tonight." -> mark day DONE, silent until tomorrow.
 - "I'll be another 30 min" -> POST "I'm going to be about 30 minutes late." -> re-prompt 30 min after THIS click.
 - "I'll be another hour" -> POST "I'm going to be about an hour late." -> re-prompt 1 hour after THIS click.
-Delivery is a Google Chat incoming-webhook POST. No OAuth, no login.
 
 ## Contract (non-negotiable)
 - Every button sends a message. There is NO silent snooze.
@@ -55,3 +54,15 @@ message strings without touching code.
 Only for: a genuine missing prerequisite (e.g., Python not installed), an
 unsafe external action (sending a real message, committing a secret), or a
 real contradiction in this contract. Do not stop for routine edits or local tests.
+
+## Delivery target (v1)
+- Target is a Microsoft Teams Workflows (Power Automate) incoming webhook.
+- The POST body is an Adaptive Card wrapper (type "message" -> attachments ->
+  contentType "application/vnd.microsoft.card.adaptive" -> content AdaptiveCard
+  with a single TextBlock holding the message). NOT a bare {"text": ...}.
+- Isolate payload construction in ONE function (e.g. build_payload(message_text))
+  so the body shape can be swapped for another provider without touching the
+  state machine.
+- SUCCESS = any HTTP 2xx. Teams Workflows returns 202 Accepted, not 200. Do NOT
+  hardcode `== 200`; treat 200–299 as success and everything else as a failure
+  that blocks the state transition.
