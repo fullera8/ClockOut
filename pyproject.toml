@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "clockout"
+version = "0.1.0"
+description = "A small Windows system-tray app for home-time check-ins."
+requires-python = ">=3.10"
+dependencies = [
+    "requests>=2.31,<3",
+    "platformdirs>=4.0,<5",
+    "pystray>=0.19,<1",
+    "Pillow>=10,<12",
+    "python-dotenv>=1.0,<2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8,<9",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
